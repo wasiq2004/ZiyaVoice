@@ -71,8 +71,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // For Twilio webhook form data
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // For Twilio webhook form data
 
 // Health check endpoint for Railway
 app.get('/healthz', (req, res) => {
