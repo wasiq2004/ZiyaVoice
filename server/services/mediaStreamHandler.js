@@ -45,7 +45,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MediaStreamHandler = void 0;
 var sdk_1 = require("@deepgram/sdk");
-var llmService_js_1 = require("./llmService.js");
+var llmService_js_1 = require("../llmService.js");
 var ulaw = require("node-ulaw");
 var sessions = new Map();
 var MediaStreamHandler = /** @class */ (function () {
