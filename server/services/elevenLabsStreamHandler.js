@@ -46,7 +46,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElevenLabsStreamHandler = void 0;
 var ulaw = require("node-ulaw");
 var database_js_1 = require("../config/database.js");
-var llmService_js_1 = require("./llmService.js");
+var llmService_js_1 = require("../llmService.js");
 var uuid_1 = require("uuid");
 var stream_1 = require("stream");
 var sessions = new Map();
