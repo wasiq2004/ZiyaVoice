@@ -1438,3 +1438,13 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
+app.get("/db-test", async (req, res) => {
+  try {
+    const [rows] = await mysqlPool.query("SELECT 1 AS test");
+    res.json({ success: true, rows });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
+
