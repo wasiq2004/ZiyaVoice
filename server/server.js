@@ -1438,14 +1438,18 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
-app.get("/db-test", async (req, res) => {
+app.get("/db-conn-status", async (req, res) => {
   try {
-    const [rows] = await mysqlPool.query("SELECT 1 AS test");
-    res.json({ success: true, rows });
+    const conn = await mysqlPool.getConnection();
+    await conn.ping();
+    conn.release();
+
+    res.json({ success: true, message: "MySQL connected successfully!" });
   } catch (error) {
-    console.error("DB TEST ERROR:", error);
-    res.json({ success: false, error: error.message || "Unknown error" });
+    console.error("MYSQL CONNECTION ERROR:", error);
+    res.json({ success: false, error: error.message || "No message" });
   }
 });
+
 
 
