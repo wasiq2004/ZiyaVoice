@@ -1443,7 +1443,8 @@ app.get("/db-test", async (req, res) => {
     const [rows] = await mysqlPool.query("SELECT 1 AS test");
     res.json({ success: true, rows });
   } catch (error) {
-    res.json({ success: false, error: error.message });
+    console.error("DB TEST ERROR:", error);
+    res.json({ success: false, error: error.message || "Unknown error" });
   }
 });
 
