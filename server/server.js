@@ -65,14 +65,19 @@ if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
 }
 
 // Configure CORS with frontend URL and credentials
-app.use(cors({
+// ---------------- CORS CONFIG ------------------
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://ziyavoiceagent.great-site.net";
+const corsOptions = {
   origin: FRONTEND_URL,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
+
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // For Twilio webhook form data
+app.options("*", cors(corsOptions));
+// ------------------------------------------------
+ // For Twilio webhook form data
 
 // Health check endpoint for Railway
 app.get('/healthz', (req, res) => {
