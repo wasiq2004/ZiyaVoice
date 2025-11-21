@@ -1,23 +1,27 @@
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
-const path = require('path');
 
-// Load environment variables
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Load env vars (Railway injects them automatically)
+dotenv.config();
 
-// MySQL connection configuration
+// 🚨 Log to verify Railway is sending vars
+console.log("MYSQL ENV:", {
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  db: process.env.MYSQL_DATABASE
+});
+
+// ❌ REMOVE ALL DEFAULT VALUES — very important
 const MYSQL_CONFIG = {
-  host: process.env.MYSQL_HOST || 'localhost',
-  port: parseInt(process.env.MYSQL_PORT || '3306'),
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || '',
-  database: process.env.MYSQL_DATABASE || 'ziya_voice_agent',
+  host: process.env.MYSQL_HOST,
+  port: Number(process.env.MYSQL_PORT),
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 10
 };
 
-// Create a connection pool
 const mysqlPool = mysql.createPool(MYSQL_CONFIG);
 
 module.exports = mysqlPool;
