@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ziya Voice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: '#10B981',
+                dark: '#059669',
+              },
+              darkbg: {
+                DEFAULT: '#1E293B',
+                light: '#334155',
+                lighter: '#475569',
+              },
+              lightbg: {
+                DEFAULT: '#F1F5F9',
+                dark: '#E2E8F0',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+          }
+        }
+      };
+    </script>
+    <style>
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+      .dark ::-webkit-scrollbar-track { background: #2d3748; }
+      ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #555; }
+      .dark ::-webkit-scrollbar-thumb { background: #555; }
+      .dark ::-webkit-scrollbar-thumb:hover { background: #777; }
+      
+      /* Custom animations */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slideInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+      @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+      @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+      @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      @keyframes glow { 0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); } 50% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); } }
+      
+      .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+      .animate-slide-up { animation: slideInUp 0.6s ease-out; }
+      .animate-slide-down { animation: slideInDown 0.6s ease-out; }
+      .animate-slide-left { animation: slideInLeft 0.6s ease-out; }
+      .animate-slide-right { animation: slideInRight 0.6s ease-out; }
+      .animate-scale-in { animation: scaleIn 0.5s ease-out; }
+      .animate-pulse-soft { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      .animate-bounce-gentle { animation: bounce 2s ease-in-out infinite; }
+      .animate-glow { animation: glow 2s ease-in-out infinite; }
+      .btn-animate { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+      .btn-animate:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); }
+      .btn-animate:active { transform: translateY(0); }
+      .card-animate { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+      .card-animate:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); }
+      .input-animate { transition: all 0.3s ease; }
+      .input-animate:focus { transform: scale(1.02); }
+      .success-message-animate { animation: slideInDown 0.4s ease-out; }
+      .error-message-animate { animation: slideInDown 0.4s ease-out; }
+      .spinner { border: 3px solid rgba(16, 185, 129, 0.1); border-radius: 50%; border-top: 3px solid #10B981; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+      .page-transition { animation: fadeIn 0.4s ease-in-out; }
+      .stagger-children > * { animation: slideInUp 0.6s ease-out; }
+      .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+      .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+      .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+      .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+      .stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+      .stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+      @media (max-width: 640px) {
+        .animate-slide-left,
+        .animate-slide-right {
+          animation: slideInUp 0.6s ease-out;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-lightbg dark:bg-darkbg">
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
