@@ -30,10 +30,6 @@ const AdminService = require('./services/adminService.js');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
-
-// Frontend URL for CORS (from environment variable)
-const FRONTEND_URL = "https://ziyavoiceagent.great-site.net";
-
 // Initialize express-ws
 const wsInstance = expressWs(app);
 
