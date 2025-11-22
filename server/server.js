@@ -18,7 +18,7 @@ dotenv.config({ path: envPath });
 const { ApiKeyService } = require('./services/apiKeyService.js');
 const { ExternalApiService } = require('./services/externalApiService.js');
 const { PhoneNumberService } = require('./services/phoneNumberService.js');
-const { AgentService } = require('./services/agentService.js');
+const AgentService = require('./services/agentService.js');
 const { CampaignService } = require('./services/campaignService.js');
 const { AuthService } = require('./services/authService.js');
 const { TwilioService } = require('./services/twilioService.js');
@@ -38,6 +38,8 @@ const authService = new AuthService(mysqlPool);
 const twilioService = new TwilioService();
 const twilioBasicService = new TwilioBasicService();
 const adminService = new AdminService(mysqlPool);
+const agentService = new AgentService(mysqlPool);
+
 
 console.log("Twilio Basic Service initialized");
 
@@ -817,7 +819,7 @@ app.get('/api/agents', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
 
-    const agents = await AgentService.getAgents(userId);
+    const agents = await agentService.getAgents(userId);
     res.json({ success: true, data: agents });
   } catch (error) {
     console.error('Error fetching agents:', error);
