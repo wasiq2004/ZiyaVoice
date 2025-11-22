@@ -764,7 +764,6 @@ app.post('/api/twilio/make-call', async (req, res) => {
     // 1. Fetch the agent details from database
     // 2. Configure Twilio with agent's voice settings
     // 3. Initiate the call with proper agent context
-    
     // For now, return a mock call with agent info
     res.json({ success: true, data: {
       id: 'call_' + Date.now(),
@@ -807,23 +806,33 @@ app.post('/api/add-twilio-number', async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
-
-
 // Agent endpoints
 // Get all agents for a user
 app.get('/api/agents', async (req, res) => {
   try {
     const { userId } = req.query;
+
     if (!userId) {
-      return res.status(400).json({ success: false, message: 'User ID is required' });
+      return res.status(400).json({
+        success: false,
+        message: 'User ID is required'
+      });
     }
 
+    // Correct instance call
     const agents = await agentService.getAgents(userId);
-    res.json({ success: true, data: agents });
+
+    res.json({
+      success: true,
+      data: agents
+    });
   } catch (error) {
     console.error('Error fetching agents:', error);
-    res.status(500).json({ success: false, message: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 });
 
@@ -836,7 +845,7 @@ app.get('/api/agents/:id', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
 
-    const agent = await AgentService.getAgentById(userId, id);
+    const agent = await agentService.getAgentById(userId, id);
     if (!agent) {
       return res.status(404).json({ success: false, message: 'Agent not found' });
     }
@@ -856,7 +865,7 @@ app.post('/api/agents', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User ID and agent data are required' });
     }
 
-    const newAgent = await AgentService.createAgent(userId, agent);
+    const newAgent = await agentService.createAgent(userId, agent);
     res.json({ success: true, data: newAgent });
   } catch (error) {
     console.error('Error creating agent:', error);
@@ -877,7 +886,7 @@ app.put('/api/agents/:id', async (req, res) => {
     const agentData = { ...req.body };
     delete agentData.userId;
     
-    const updatedAgent = await AgentService.updateAgent(userId, id, agentData);
+    const updatedAgent = await agentService.updateAgent(userId, id, agentData);
     res.json({ success: true, data: updatedAgent });
   } catch (error) {
     console.error('Error updating agent:', error);
@@ -894,7 +903,7 @@ app.delete('/api/agents/:id', async (req, res) => {
       return res.status(400).json({ success: false, message: 'User ID is required' });
     }
 
-    await AgentService.deleteAgent(userId, id);
+    await agentService.deleteAgent(userId, id);
     res.json({ success: true, message: 'Agent deleted successfully' });
   } catch (error) {
     console.error('Error deleting agent:', error);
@@ -1125,7 +1134,7 @@ app.ws('/voice-stream', function (ws, req) {
   
   // For Twilio calls, fetch agent voice and identity from database if agentId is provided
   if (isTwilioCall && agentId && !voiceId) {
-    AgentService.getAgentById('system', agentId).then(agent => {
+    agentService.getAgentById('system', agentId).then(agent => {
       if (agent) {
         // Get voice ID
         if (agent.voiceId) {
