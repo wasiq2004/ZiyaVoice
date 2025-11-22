@@ -62,7 +62,7 @@ if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
 
 // Configure CORS with frontend URL and credentials
 // ---------------- CORS CONFIG ------------------
-const FRONTEND_URL = process.env.FRONTEND_URL || "https://ziyavoiceagent.great-site.net";
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://benevolent-custard-76836b.netlify.app/";
 const corsOptions = {
   origin: FRONTEND_URL,
   credentials: true,
