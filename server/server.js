@@ -61,10 +61,14 @@ if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
 }
 
 // Configure CORS with frontend URL and credentials
-// ---------------- CORS CONFIG ------------------
-const FRONTEND_URL = process.env.FRONTEND_URL || "https://benevolent-custard-76836b.netlify.app/";
+// ---------------- CORS CONFIG -----------------
+const FRONTEND_URL = "https://benevolent-custard-76836b.netlify.app";
+
 const corsOptions = {
-  origin: FRONTEND_URL,
+  origin: [
+    FRONTEND_URL,
+    /\.netlify\.app$/ // allow Netlify previews
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -72,6 +76,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
