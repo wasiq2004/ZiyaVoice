@@ -51,10 +51,19 @@ if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
 } else {
   console.warn("Voice call feature disabled — missing DEEPGRAM_API_KEY or GOOGLE_GEMINI_API_KEY");
 }
+
 const agentService = new AgentService(mysqlPool);
 
+// === ADD THIS BLOCK ===
+if (!process.env.ELEVEN_LABS_API_KEY) {
+  console.warn("WARNING: ELEVEN_LABS_API_KEY is not configured. Text-to-speech will not work.");
+} else {
+  console.log("ElevenLabs API key loaded successfully");
+}
+// =======================
 
 console.log("Twilio Basic Service initialized");
+
 
 // ================= CORS ==================
 const FRONTEND_URL = "https://benevolent-custard-76836b.netlify.app";
