@@ -38,6 +38,19 @@ const authService = new AuthService(mysqlPool);
 const twilioService = new TwilioService();
 const twilioBasicService = new TwilioBasicService();
 const adminService = new AdminService(mysqlPool);
+// Initialize MediaStreamHandler for voice call pipeline
+let mediaStreamHandler = null;
+
+if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
+  mediaStreamHandler = new MediaStreamHandler(
+    process.env.DEEPGRAM_API_KEY,
+    process.env.GOOGLE_GEMINI_API_KEY,
+    campaignService
+  );
+  console.log("MediaStreamHandler initialized with Deepgram + Gemini");
+} else {
+  console.warn("Voice call feature disabled — missing DEEPGRAM_API_KEY or GOOGLE_GEMINI_API_KEY");
+}
 const agentService = new AgentService(mysqlPool);
 
 
@@ -1084,7 +1097,14 @@ app.post('/api/voices/elevenlabs/preview', async (req, res) => {
 app.ws('/api/stt', function (ws, req) {
   elevenLabsStreamHandler.handleConnection(ws, req);
 });
-
+// WebSocket for Twilio → Deepgram → Gemini → ElevenLabs
+app.ws('/api/call', (ws, req) => {
+  if (!mediaStreamHandler) {
+    ws.close();
+    return;
+  }
+  mediaStreamHandler.handleConnection(ws, req);
+});
 // WebSocket endpoint for voice stream (frontend voice chat + Twilio calls)
 app.ws('/voice-stream', function (ws, req) {
   console.log('New voice stream connection established');
