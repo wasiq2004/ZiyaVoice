@@ -8,12 +8,13 @@ const expressWs = require('express-ws');
 const { v4: uuidv4 } = require('uuid');
 const twilio = require('twilio');
 
-// Load environment variables from .env.local (development) or .env (production)
-const envPath = process.env.NODE_ENV === 'production' 
+// Load environment variables
+const envPath = process.env.NODE_ENV === 'production'
   ? path.resolve(__dirname, '.env')
   : path.resolve(__dirname, '../.env.local');
 dotenv.config({ path: envPath });
 
+// Import services (STATIC classes)
 const { ApiKeyService } = require('./services/apiKeyService.js');
 const { ExternalApiService } = require('./services/externalApiService.js');
 const { PhoneNumberService } = require('./services/phoneNumberService.js');
@@ -24,50 +25,29 @@ const { TwilioService } = require('./services/twilioService.js');
 const { TwilioBasicService } = require('./services/twilioBasicService.js');
 const { MediaStreamHandler } = require('./services/mediaStreamHandler.js');
 const { ElevenLabsStreamHandler } = require('./services/elevenLabsStreamHandler.js');
-
-// Import AdminService
 const AdminService = require('./services/adminService.js');
 
+// Init server
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
-// Initialize express-ws
-const wsInstance = expressWs(app);
+expressWs(app);
 
-// Initialize services
+// Instantiate ONLY services that require instances
 const campaignService = new CampaignService(mysqlPool);
 const authService = new AuthService(mysqlPool);
 const twilioService = new TwilioService();
-const elevenLabsStreamHandler = new ElevenLabsStreamHandler();
+const twilioBasicService = new TwilioBasicService();
 const adminService = new AdminService(mysqlPool);
 
-// Initialize Twilio Basic Service (user-specific credentials from database)
-const twilioBasicService = new TwilioBasicService();
-console.log('Twilio Basic Service initialized (user-specific credentials)');
+console.log("Twilio Basic Service initialized");
 
-// In-memory storage for mock data (phone numbers)
-const phoneNumbersStorage = new Map(); // userId -> [phoneNumbers]
-
-// Initialize MediaStreamHandler if API keys are available (legacy support)
-let mediaStreamHandler = null;
-if (process.env.DEEPGRAM_API_KEY && process.env.GOOGLE_GEMINI_API_KEY) {
-  mediaStreamHandler = new MediaStreamHandler(
-    process.env.DEEPGRAM_API_KEY,
-    process.env.GOOGLE_GEMINI_API_KEY,
-    campaignService
-  );
-  console.log('MediaStreamHandler initialized with Deepgram and Gemini');
-} else {
-  console.warn('Deepgram API key or Google Gemini API key not found. Media streaming will be disabled.');
-}
-
-// Configure CORS with frontend URL and credentials
-// ---------------- CORS CONFIG -----------------
+// ================= CORS ==================
 const FRONTEND_URL = "https://benevolent-custard-76836b.netlify.app";
 
 const corsOptions = {
   origin: [
     FRONTEND_URL,
-    /\.netlify\.app$/ // allow Netlify previews
+    /\.netlify\.app$/
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -79,6 +59,7 @@ app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // ------------------------------------------------
  // For Twilio webhook form data
