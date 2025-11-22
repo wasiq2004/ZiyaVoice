@@ -132,20 +132,24 @@ async updateAgent(userId, id, updateData) {
             settings: "settings"
         };
 
-        for (const key in updateData) {
-            if (key === "id" || key === "userId") continue;
+       for (const key in updateData) {
+    if (key === "id" || key === "userId") continue;
 
-            const dbField = fieldMap[key];
-            if (!dbField) continue; // ignore unknown fields
+    // ❌ Do NOT update created_at (frontend sends ISO format)
+    if (key === "createdDate" || key === "created_at") continue;
 
-            if (key === "settings") {
-                fields.push(`${dbField} = ?`);
-                values.push(JSON.stringify(updateData[key]));
-            } else {
-                fields.push(`${dbField} = ?`);
-                values.push(updateData[key]);
-            }
-        }
+    if (key === "settings") {
+        fields.push(`settings = ?`);
+        values.push(JSON.stringify(updateData[key]));
+    } else if (key === "voiceId") {
+        fields.push(`voice_id = ?`);
+        values.push(updateData[key]);
+    } else {
+        fields.push(`${key} = ?`);
+        values.push(updateData[key]);
+    }
+}
+
 
         values.push(id);
         values.push(userId);
