@@ -72,6 +72,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // ------------------------------------------------
  // For Twilio webhook form data
 
