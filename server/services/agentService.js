@@ -111,46 +111,59 @@ class AgentService {
     }
 
     // Update agent
-    async updateAgent(userId, id, updateData) {
-        try {
-            const existing = await this.getAgentById(userId, id);
-            if (!existing) throw new Error("Agent not found");
+async updateAgent(userId, id, updateData) {
+    try {
+        const existing = await this.getAgentById(userId, id);
+        if (!existing) throw new Error("Agent not found");
 
-            const fields = [];
-            const values = [];
+        const fields = [];
+        const values = [];
 
-            for (const key in updateData) {
-                if (key === "id" || key === "userId") continue;
+        // *** FIELD MAPPING FIX ***
+        const fieldMap = {
+            createdDate: "created_at",
+            updatedDate: "updated_at",
+            voiceId: "voice_id",
+            name: "name",
+            identity: "identity",
+            status: "status",
+            model: "model",
+            language: "language",
+            settings: "settings"
+        };
 
-                if (key === "settings") {
-                    fields.push(`settings = ?`);
-                    values.push(JSON.stringify(updateData[key]));
-                } else if (key === "voiceId") {
-                    fields.push(`voice_id = ?`);
-                    values.push(updateData[key]);
-                } else {
-                    fields.push(`${key} = ?`);
-                    values.push(updateData[key]);
-                }
+        for (const key in updateData) {
+            if (key === "id" || key === "userId") continue;
+
+            const dbField = fieldMap[key];
+            if (!dbField) continue; // ignore unknown fields
+
+            if (key === "settings") {
+                fields.push(`${dbField} = ?`);
+                values.push(JSON.stringify(updateData[key]));
+            } else {
+                fields.push(`${dbField} = ?`);
+                values.push(updateData[key]);
             }
-
-            // WHERE clause
-            values.push(id);
-            values.push(userId);
-
-            if (fields.length > 0) {
-                await this.pool.execute(
-                    `UPDATE agents SET ${fields.join(", ")} WHERE id = ? AND user_id = ?`,
-                    values
-                );
-            }
-
-            return await this.getAgentById(userId, id);
-        } catch (err) {
-            console.error("Error updating agent:", err);
-            throw new Error("Failed to update agent: " + err.message);
         }
+
+        values.push(id);
+        values.push(userId);
+
+        if (fields.length > 0) {
+            await this.pool.execute(
+                `UPDATE agents SET ${fields.join(", ")} WHERE id = ? AND user_id = ?`,
+                values
+            );
+        }
+
+        return await this.getAgentById(userId, id);
+    } catch (err) {
+        console.error("Error updating agent:", err);
+        throw new Error("Failed to update agent: " + err.message);
     }
+}
+
 
     // Delete agent
     async deleteAgent(userId, id) {
